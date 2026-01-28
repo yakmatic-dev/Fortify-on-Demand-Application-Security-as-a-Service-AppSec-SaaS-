@@ -1,58 +1,26 @@
-name: Fortify on Demand SAST Scan
-
-# This workflow uses a TRIAL account
-# Environment: https://trial.fortify.com
-# Last Updated: January 28, 2026
+name: Fortify SAST Scan.
 
 on:
   push:
-    branches: 
-      - main
-      - develop
-  pull_request:
-    branches: 
-      - main
+    branches: [ main]
+  # pull_request:
+  #   branches: [ main ]
 
 jobs:
-  fortify-sast:
-    name: Fortify SAST Analysis
+  fortify-scan:
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: read
-      security-events: write
-    
+
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Full history for better analysis
-      
-      - name: Run Fortify SAST Scan
+      - name: Check out source code
+        uses: actions/checkout@v4  
+
+      - name: Run Fortify on Demand SAST & SCA Scan
         uses: fortify/github-action@v2
         with:
           sast-scan: true
           debricked-sca-scan: true
         env:
-          # TRIAL ACCOUNT CONFIGURATION
           FOD_URL: https://trial.fortify.com
-          FOD_TENANT: ${{ secrets.FOD_TENANT }}
+          # FOD_TENANT: ${{ secrets.FOD_TENANT }}
           FOD_USER: ${{ secrets.FOD_USER }}
           FOD_PASSWORD: ${{ secrets.FOD_PAT }}
-      
-      - name: Export Results
-        if: always()
-        uses: fortify/github-action@v2
-        with:
-          export: true
-        env:
-          FOD_URL: https://trial.fortify.com
-          FOD_TENANT: ${{ secrets.FOD_TENANT }}
-          FOD_USER: ${{ secrets.FOD_USER }}
-          FOD_PASSWORD: ${{ secrets.FOD_PAT }}
-      
-      - name: Upload SARIF Results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ./fortify.sarif
