@@ -147,19 +147,20 @@ on:
     branches: [ main ]
 
 jobs:
-  fortify-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      
-      - name: Fortify Scan
-        uses: fortify/github-action@v1
+      steps:    
+      - name: Check out source code
+        uses: actions/checkout@v4  
+      - name: Run Fortify on Demand SAST & SCA Scan
+        uses: fortify/github-action@v2
         with:
           sast-scan: true
+          debricked-sca-scan: true
         env:
-          FOD_URL: ${{ secrets.FOD_URL }}
-          FOD_API_KEY: ${{ secrets.FOD_API_KEY }}
-          FOD_SECRET: ${{ secrets.FOD_SECRET }}
+          FOD_URL: https://ams.fortify.com
+          FOD_TENANT: ${{secrets.FOD_TENANT}}
+          FOD_USER: ${{secrets.FOD_USER}}
+          FOD_PASSWORD: ${{secrets.FOD_PAT}}
+          
 ```
 
 #### 4. Scan Execution
