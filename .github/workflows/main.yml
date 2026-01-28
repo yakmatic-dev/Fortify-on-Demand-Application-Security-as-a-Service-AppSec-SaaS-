@@ -1,4 +1,4 @@
-name: Fortify SAST Scan.
+name: Fortify SAST Scan
 
 on:
   push:
